@@ -50,11 +50,13 @@ result = {1: "INR", 0: "Non-INR"}
 if st.button("Predict"):
     # Predict class and probabilities
     predicted_class = model.predict(features)[0]
+
     predicted_proba = model.predict_proba(features)[0]
 
     # Display prediction results
     st.write(f"**Predicted Class:** {result[predicted_class]}")
-    st.write(f"**Based on feature values, predicted possibility of INR is:** {(predicted_proba[predicted_class] * 100):.1f}%")
+
+    st.write(f"**Based on feature values, predicted possibility of INR is:** {(predicted_proba[1] * 100):.1f}%")
 
     # Generate advice based on prediction results
     probability = predicted_proba[predicted_class] * 100
@@ -64,12 +66,14 @@ if st.button("Predict"):
     shap_values = explainer.shap_values(pd.DataFrame([feature_values], columns=feature_names))
     shap.initjs()
     # fig = plt.figure()
-    pyplot.plot([1, 1, 3, 4])
-    if predicted_class == 1:
-        shap.force_plot(explainer.expected_value[1], shap_values[1], pd.DataFrame([feature_values], columns=feature_names), matplotlib=True, show=False)
-    else:
-        shap.force_plot(explainer.expected_value[0], shap_values[0],
-                        pd.DataFrame([feature_values], columns=feature_names), matplotlib=True, show=False)
+
+    # if predicted_class == 1:
+    #     shap.force_plot(explainer.expected_value[1], shap_values[1], pd.DataFrame([feature_values], columns=feature_names), matplotlib=True, show=False)
+    # else:
+    #     shap.force_plot(explainer.expected_value[0], shap_values[0],
+    #                     pd.DataFrame([feature_values], columns=feature_names), matplotlib=True, show=False)
+    shap.force_plot(explainer.expected_value[1], shap_values[1], pd.DataFrame([feature_values], columns=feature_names),
+                    matplotlib=True, show=False)
     pyplot.savefig("shap_force_plot.png", bbox_inches='tight', dpi=1200)
 
     st.image("shap_force_plot.png")
